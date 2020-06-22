@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first.rules"
+  # - "second.rules"
+
+scrape_configs:
+  - job_name: RabbitMQ
+    static_configs:
+      - targets: ['rabbitmq-exporter:9419']
+        labels:
+          group: 'rabbitmq'
+  - job_name: Prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          group: 'prometheus'

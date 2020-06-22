@@ -1,0 +1,36 @@
+version: "3.3"
+
+services: 
+  rabbitmq:
+    restart: always
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment: 
+      - RABBITMQ_NODENAME=my-rabbit
+    ports:
+      - "5671:5671"
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - rabbitmq-network
+  rabbitmq-exporter:
+    restart: always
+    image: kbudde/rabbitmq-exporter
+    container_name: rabbitmq-exporter
+    environment: 
+      - RABBIT_URL=http://rabbitmq:15672
+    ports: 
+      - "9419:9419"
+    networks:
+      - rabbitmq-network
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports: 
+      - "9090:9090"
+    networks: 
+      - rabbitmq-network
+    volumes: 
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+networks:
+    rabbitmq-network:
